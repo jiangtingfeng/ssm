@@ -16,7 +16,7 @@ public interface CountMapper {
     @Select("select *from count where oid=#{oid}")
     List<Count> getByOid(int oid);
 
-    @Insert("insert into count(pid,number,oid) values(#{pid},#{number},#{oid})")
+    @Insert("insert into count values(#{id},#{pid},#{number},#{oid})")
     int insert(Count count);
 
     @Select("select *from count where id=#{id}")

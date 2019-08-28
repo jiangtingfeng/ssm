@@ -34,6 +34,6 @@ public interface PropertyMapper {
     @Delete("delete from property where cid=#{cid}")
     int deleteByCid(int cid);
 
-    @Update("update property set propertyName=#{propertyName},propertyValue=#{propertyValue} where id=#{id}")
+    @Update("update property set propertyValue=#{propertyValue} where id=#{id}")
     int update(Property property);
 }

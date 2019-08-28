@@ -17,6 +17,7 @@ public class UserOrder {
     private Date confirmTime;
     private String address;
     private Integer post;
-    private Integer mobile;
+    private String mobile;
     private String userMessage;
+    private int uid;
 }

@@ -32,6 +32,7 @@ public class PropertyController {
     @RequestMapping("/admin_property_update")
     public ModelAndView propertyUpdate(Property property){
         ModelAndView mav = new ModelAndView("propertyEdit");
+        System.out.println(property.getPropertyName());
         if(propertyService.getByName(property.getPropertyName()) != null) {
             mav.addObject("message","该属性名已存在，请重新赋值！");
         }

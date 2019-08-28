@@ -109,8 +109,8 @@
 
     <ol class="breadcrumb">
         <li><a href="categoryList">所有分类</a></li>
-        <c:if test="${! empty list.list}">
-        <li><a href="category_product_list?cid=${list.list.get(0).cid}">${categoryName}</a></li>
+        <c:if test="${! empty category}">
+        <li><a href="category_product_list?cid=${category.id}">${category.categoryName}</a></li>
         </c:if>
         <li class="active">产品管理</li>
     </ol>

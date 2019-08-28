@@ -20,9 +20,11 @@ public interface UserOrderMapper {
     @Select("select *from userOrder where buyerName=#{buyerName}")
     UserOrder getByBuyerName(String name);
 
-    @Insert("insert into userOrder(status,totalMoney,productNumber,buyerName,setTime,payTime,sendTime,confirmTime,address,post,mobile,userMessage,uid) values(#{status},#{totalMoney},#{productNumber},#{buyerName},#{setTime},#{payTime},#{sendTime},#{confirmTime},#{address},#{post},#{mobile},#{userMessage},#{uid})")
+    @Insert("insert into userOrder(status,totalMoney,productNumber,buyerName,setTime,payTime,sendTime,confirmTime,address,post,mobile,userMessage,uid,receiver)" +
+            "values(#{status},#{totalMoney},#{productNumber},#{buyerName},#{setTime},#{payTime},#{sendTime},#{confirmTime},#{address},#{post},#{mobile},#{userMessage},#{uid},#{receiver})")
     int insert(UserOrder order);
 
     @Update("update userOrder set sendTime=#{sendTime},status=#{status} where id=#{id}")
         int update(UserOrder order);
+
 }

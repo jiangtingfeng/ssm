@@ -88,6 +88,7 @@ public class CategoryController {
 		String name = RandomStringUtils.randomAlphanumeric(10);
 		String newFileName = name + ".jpg";
 		File newFile = new File(request.getServletContext().getRealPath("/image"), newFileName);
+		System.out.println(request.getServletContext().getRealPath("/image"));
 		newFile.getParentFile().mkdirs();
 		file.transferTo(newFile);
 		category.setCategoryPic(newFileName);
@@ -150,7 +151,7 @@ public class CategoryController {
 		PageHelper.startPage(start,Page.COUNT);
 		PageInfo<Property> pageInfo = new PageInfo<>(properties,Page.COUNT);
 		modelAndView.addObject("list",pageInfo);
-		modelAndView.addObject("categoryName",category.getCategoryName());
+		modelAndView.addObject("category",category);
 		modelAndView.addObject("cid",cid);
 		return modelAndView;
 	}
@@ -170,7 +171,7 @@ public class CategoryController {
 	     PageHelper.startPage(start,Page.COUNT);
 	     PageInfo<Property> propertyPageInfo = new PageInfo<>(properties,Page.COUNT);
 	     mav.addObject("list",propertyPageInfo);
-	     mav.addObject("categoryName",category.getCategoryName());
+	     mav.addObject("category",category);
          mav.addObject("cid",property.getCid());
 	     return mav;
     }
@@ -185,7 +186,7 @@ public class CategoryController {
 		PageHelper.startPage(start,Page.COUNT);
 		PageInfo<Product> productPageInfo = new PageInfo<>(products,Page.COUNT);
 		mav.addObject("list",productPageInfo);
-		mav.addObject("categoryName",category.getCategoryName());
+		mav.addObject("category",category);
 		mav.addObject("cid",cid);
 		return mav;
 	}
@@ -213,7 +214,7 @@ public class CategoryController {
         PageHelper.startPage(start,Page.COUNT);
         PageInfo<Product> productPageInfo = new PageInfo<>(products,Page.COUNT);
         modelAndView.addObject("list",productPageInfo);
-        modelAndView.addObject("categoryName",category.getCategoryName());
+        modelAndView.addObject("category",category);
         modelAndView.addObject("cid",product.getCid());
         return modelAndView;
     }

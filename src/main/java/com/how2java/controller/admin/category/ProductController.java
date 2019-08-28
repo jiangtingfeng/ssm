@@ -57,7 +57,9 @@ public class ProductController {
         String newFileName = name + ".jpg";
         File newFile = new File(request.getServletContext().getRealPath("/image"), newFileName);
         newFile.getParentFile().mkdirs();
-        file.transferTo(newFile);
+        if(file != null){
+            file.transferTo(newFile);
+        }
         productPic.setProductPic(newFileName);
         if(productPicService.insert(productPic) != 0) {
             modelAndView.addObject("message","添加成功！");
@@ -76,10 +78,12 @@ public class ProductController {
         if(productPicService.deleteById(id) != 0) {
             modelAndView.addObject("message1","删除成功！");
         }
-        List<ProductPic> productPics = productPicService.getByPid(productPic.getPid());
-        modelAndView.addObject("listProductPics",productPics);
-        Product product = productService.getById(productPic.getPid());
-        modelAndView.addObject("product",product);
+        if(productPic != null) {
+            List<ProductPic> productPics = productPicService.getByPid(productPic.getPid());
+            modelAndView.addObject("listProductPics",productPics);
+            Product product = productService.getById(productPic.getPid());
+            modelAndView.addObject("product",product);
+        }
         return modelAndView;
     }
 

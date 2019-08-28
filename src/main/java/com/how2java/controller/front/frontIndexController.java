@@ -1,7 +1,7 @@
 package com.how2java.controller.front;
 
-import com.how2java.Vo.ProductAndNumber;
 import com.how2java.Vo.ProductNumberVo;
+import com.how2java.enums.OrderStatusEnum;
 import com.how2java.pojo.*;
 import com.how2java.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,40 +59,71 @@ public class frontIndexController {
         /*
         * 判断是否已存在相应购买ID
         * */
-        boolean found = false;
-            List<Count> countList = countService.getByOid(order.getId());
-            if(countList != null) {
+            boolean found = false;
+            if(order != null ) {
+                oiid = order.getId();
+                List<Count> countList = countService.getByOid(order.getId());
+                if(countList.size()==0) {
+                    Count count = new Count();
+                    count.setId(null);
+                    count.setPid(product.getId());
+                    count.setOid(order.getId());
+                    count.setNumber(num);
+                    if(countService.insert(count) != 1){
+                        session.setAttribute("message","新增失败");
+                    }
+                }
+                countList = countService.getByOid(order.getId());
                 found = true;
-                countList.forEach(count->{
-                    if(count.getPid().intValue() == product.getId()) {
-                        order.setProductNumber(order.getProductNumber()+1);
-                        order.setTotalMoney(order.getTotalMoney()+product.getLowerPrice());
-                        count.setNumber(count.getNumber()+num);
+                AtomicBoolean tag = new AtomicBoolean(false);
+                tag.set(false);
+                countList.forEach(count -> {
+                    order.setProductNumber(order.getProductNumber() + num);
+                    order.setTotalMoney(order.getTotalMoney() + product.getLowerPrice()*num);
+                    if (count.getPid() == product.getId()) {
+                        count.setNumber(count.getNumber() + num);
+                        tag.set(true);
                     }
                 });
+                if(!tag.get()) {
+                    Count count1 = new Count();
+                    count1.setId(null);
+                    count1.setPid(product.getId());
+                    count1.setOid(order.getId());
+                    count1.setNumber(num);
+                    if(countService.insert(count1) != 1){
+                        session.setAttribute("message","新增失败");
+                    }
+                }
             }
-/*
-* 如果没有对应的ID则新增订单
-* */
+        /*
+         * 如果没有对应的ID则新增订单
+         * */
         if(!found) {
             /*
-            * 添加userorder
-            * */
+             * 添加userorder
+             * */
             UserOrder userOrder = new UserOrder();
             userOrder.setBuyerName(user.getName());
             userOrder.setSetTime(new Date());
             userOrder.setTotalMoney(product.getLowerPrice());
-            userOrder.setMobile(Integer.valueOf(user.getPhoneNumber()));
+            userOrder.setMobile(user.getPhoneNumber());
+            userOrder.setUid(user.getId());
+            userOrder.setProductNumber(num);
+            userOrder.setStatus(OrderStatusEnum.ORDER.getFlag());
             userOrderService.insert(userOrder);
+            userOrder = userOrderService.getByBuyerName(user.getName());
             oiid = userOrder.getId();
             /*
-            * 添加count
-            * */
+             * 添加count
+             * */
             Count count = new Count();
             count.setPid(product.getId());
-            count.setOid(order.getId());
+            count.setOid(userOrder.getId());
             count.setNumber(num);
-            countService.insert(count);
+            if(countService.insert(count) != 1){
+                session.setAttribute("message","新增失败");
+            }
         }
         return "redirect:forebuy?oiid="+oiid;
     }
@@ -102,7 +133,7 @@ public class frontIndexController {
         List<ProductNumberVo> productNumberVoList = new ArrayList<>();
         UserOrder userOrder = new UserOrder();
         for (String strid : oiid) {
-            userOrder = userOrderService.getById(Integer.valueOf(strid));
+            userOrder = userOrderService.getById(Integer.valueOf(strid).intValue());
             List<Count> countList = countService.getByOid(userOrder.getId());
             countList.forEach(count->{
                 ProductNumberVo productNumberVo = new ProductNumberVo();
@@ -114,6 +145,7 @@ public class frontIndexController {
         }
         model.addAttribute("userOrder",userOrder);
         model.addAttribute("productList",productNumberVoList);
+        model.addAttribute("message",session.getAttribute("message"));
         return "buy";
     }
 }

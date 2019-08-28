@@ -14,7 +14,10 @@ public class CountService {
     private CountMapper countMapper;
 
     public List<Count> getByOid(int oid) {
-        return countMapper.getByOid(oid);
+        if(countMapper.getByOid(oid) != null) {
+            return countMapper.getByOid(oid);
+        }
+        return null;
     }
 
     public List<Count> list() {

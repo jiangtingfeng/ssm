@@ -9,7 +9,7 @@ public class UserConstans {
 
     public boolean saveUser(User user) throws IOException {
         boolean result = true;
-        File file = new File("G:\\Intellij_Idea\\ssm\\user.txt");
+        File file = new File("D:\\project\\ssm\\user.txt");
         FileOutputStream fos = new FileOutputStream(file);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(user);
@@ -22,7 +22,7 @@ public class UserConstans {
     }
     public User getUser(){
         User user = new User();
-        File file = new File("G:\\Intellij_Idea\\ssm\\user.txt");
+        File file = new File("D:\\project\\ssm\\user.txt");
         try(FileInputStream fis = new FileInputStream(file);
                 ObjectInputStream ois = new ObjectInputStream(fis)){
            user = (User) ois.readObject();

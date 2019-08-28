@@ -85,6 +85,12 @@ public class indexLoginedController {
         return "forecart";
     }
 
+    @RequestMapping("/login")
+    public Object forelogin() {
+        return "login";
+    }
+
+
     @RequestMapping("forecheckLogin")
     @ResponseBody
     public String checkLogin( HttpSession session) {

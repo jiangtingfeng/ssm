@@ -14,7 +14,7 @@
     <script src="js/jquery/2.0.0/jquery.min.js"></script>
     <link href="css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="js/bootstrap/3.3.6/bootstrap.min.js"></script>
-    <link href="css/back/style.css" rel="stylesheet">
+    <link href="css/fore/style.css" rel="stylesheet">
     <title>下单界面</title>
     <script>
         function formatMoney(num){
@@ -100,7 +100,7 @@
         </span>
     </div>
 </nav>
-
+${message}
 <div class="buyPageDiv">
     <form action="forecreateOrder" method="post">
 
@@ -160,7 +160,7 @@
                 </tr>
                 </thead>
                 <tbody class="productListTableTbody">
-                <c:if test="#{! empty productList}">
+                <c:if test="${! empty productList}">
                 <c:forEach items="${productList}" var="products">
                     <tr class="orderItemTR">
                     <td class="orderItemFirstTD"><img class="orderItemImg" src="image/${products.product.productPic}"></td>
@@ -181,7 +181,7 @@
                     <td><span class="orderItemUnitSum">
 						￥${userOrder.totalMoney}
 						</span></td>
-                    <td rowspan="5"  class="orderItemLastTD">
+                    <td rowspan="1"  class="orderItemLastTD">
                         <label class="orderItemDeliveryLabel">
                             <input type="radio" value="" checked="checked">
                             普通配送
