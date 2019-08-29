@@ -8,6 +8,10 @@
 <link href="css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
 <script src="js/bootstrap/3.3.6/bootstrap.min.js"></script>
 <link href="css/fore/style.css" rel="stylesheet">
+<%--默认跳转界面--%>
+<%
+	response.sendRedirect("index.action");
+%>
 <title>模仿天猫官网</title>
 <script>
 function formatMoney(num){

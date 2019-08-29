@@ -111,8 +111,8 @@
             <input type="text" placeholder="平衡车 原汁机"  value="" name="keyword">
             <button class="searchButton" type="submit">搜天猫</button>
             <div class="searchBelow">
-                <c:if test="${! empty categorylist}">
-                    <c:forEach items="${categorylist}" var="category">
+                <c:if test="${! empty categoryList}">
+                    <c:forEach items="${categoryList}" var="category">
 					<span>
 						<a href="forecategory?cid=${category.id}">
 								${category.categoryName}

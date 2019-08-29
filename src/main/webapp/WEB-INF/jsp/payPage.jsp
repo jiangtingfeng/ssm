@@ -1,14 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
-  User: Administrator
-  Date: 2019/8/28/028
-  Time: 9:42
+  User: JGW
+  Date: 2019/8/29
+  Time: 16:26
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-    isELIgnored="false" %>
-<%@ page import="java.math.*" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -16,7 +14,7 @@
     <link href="css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="js/bootstrap/3.3.6/bootstrap.min.js"></script>
     <link href="css/fore/style.css" rel="stylesheet">
-    <title>下单界面</title>
+    <title>支付页面</title>
     <script>
         function formatMoney(num){
             num = num.toString().replace(/\$|\,/g,'');
@@ -88,7 +86,7 @@
         </a>
         <span>喵，欢迎来天猫</span>
         <c:if test="${! empty userOrder}">
-        <a href="login">${userOrder.buyerName}</a>
+            <a href="login">${userOrder.buyerName}</a>
         </c:if>
         <span>欢迎登入</span>
         <span class="pull-right">
@@ -102,132 +100,30 @@
     </div>
 </nav>
 ${message}
-<div class="buyPageDiv">
-    <form action="forecreateOrder" method="post">
 
-        <div class="buyFlow">
-            <img class="pull-left" src="image/simpleLogo.png">
-            <img class="pull-right" src="image/buyflow.png">
-            <div style="clear:both"></div>
-        </div>
-        <div class="address">
-            <div class="addressTip">输入收货地址</div>
-            <div>
+<div class="aliPayPageDiv">
+    <div class="aliPayPageLogo">
+        <img class="pull-left" src="image/simpleLogo.png">
+        <div style="clear:both"></div>
+    </div>
 
-                <table class="addressTable">
-                    <tr>
-                        <td>
-                            <input name="id" value="${userOrder.id}" hidden="true"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="firstColumn">详细地址<span class="redStar">*</span></td>
-                        <td><textarea name="address" cols="30" rows="4" placeholder="建议您如实填写详细收货地址，例如接到名称，门牌好吗，楼层和房间号等信息"></textarea></td>
-                    </tr>
-                    <tr>
-                        <td>邮政编码</td>
-                        <td><input  name="post" placeholder="如果您不清楚邮递区号，请填写000000" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>收货人姓名<span class="redStar">*</span></td>
-                        <td><input  name="receiver"  placeholder="长度不超过25个字符" type="text"></td>
-                    </tr>
-                    <tr>
-                        <td>手机号码 <span class="redStar">*</span></td>
-                        <td><input name="mobile"  placeholder="请输入11位手机号码" type="text"></td>
-                    </tr>
-                </table>
+    <div>
+        <span class="confirmMoneyText">扫一扫付款（元）</span>
+        <span class="confirmMoney">
+		￥${orderUser.totalMoney}</span>
 
-            </div>
-        </div>
+    </div>
+    <div>
+        <img class="aliPayImg" src="image/alipay2wei.png">
+    </div>
 
-        <div class="productList">
-            <div class="productListTip">确认订单信息</div>
-            <table class="productListTable">
-                <thead>
-                <tr>
-                    <th colspan="2" class="productListTableFirstColumn">
-                        <img class="tmallbuy" src="image/tmallbuy.png">
-                        <a class="marketLink" href="#nowhere">店铺：天猫店铺</a>
-                        <a class="wangwanglink" href="#nowhere"> <span class="wangwangGif"></span> </a>
-                    </th>
-                    <th>单价</th>
-                    <th>数量</th>
-                    <th>小计</th>
-                    <th>配送方式</th>
-                </tr>
-                <tr class="rowborder">
-                    <td  colspan="2" ></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                </thead>
-                <tbody class="productListTableTbody">
-                <c:if test="${! empty productList}">
-                <c:forEach items="${productList}" var="products">
-                    <tr class="orderItemTR">
-                    <td class="orderItemFirstTD"><img class="orderItemImg" src="image/${products.product.productPic}"></td>
-                    <td class="orderItemProductInfo">
-                        <a  href="foreproduct?pid=${products.product.id}" class="orderItemProductLink">
-                            ${products.product.productName}
-                        </a>
-                        <img src="image/creditcard.png" title="支持信用卡支付">
-                        <img src="image/7day.png" title="消费者保障服务,承诺7天退货">
-                        <img src="image/promise.png" title="消费者保障服务,承诺如实描述">
-                    </td>
-                    <td>
-                        <span class="orderItemProductPrice">￥${products.product.lowerPrice}</span>
-                    </td>
-                    <td>
-                        <span class="orderItemProductNumber">${products.number}</span>
-                    </td>
-                    <td><span class="orderItemUnitSum">
-						￥${Math.round(products.product.lowerPrice*products.number*100)/100}
-						</span></td>
-                    <td rowspan="1"  class="orderItemLastTD">
-                        <label class="orderItemDeliveryLabel">
-                            <input type="radio" value="" checked="checked">
-                            普通配送
-                        </label>
-                        <select class="orderItemDeliverySelect" class="form-control">
-                            <option>快递 免邮费</option>
-                        </select>
-                    </td>
-                </tr>
-                </c:forEach>
-                </c:if>
-                </tbody>
 
-            </table>
-            <div class="orderItemSumDiv">
-                <div class="pull-left">
-                    <span class="leaveMessageText">给卖家留言:</span>
-                    <span>
-					<img class="leaveMessageImg" src="image/leaveMessage.png">
-				</span>
-                    <span class="leaveMessageTextareaSpan">
-					<textarea name="userMessage" cols="30" rows="5" class="leaveMessageTextarea"></textarea>
-					<div>
-						<span>还可以输入200个字符</span>
-					</div>
-				</span>
-                </div>
-                <span class="pull-right">店铺合计(含运费): ￥${userOrder.totalMoney}</span>
-            </div>
-        </div>
-        <div class="orderItemTotalSumDiv">
-            <div class="pull-right">
-                <span>实付款：</span>
-                <span class="orderItemTotalSumSpan">￥${userOrder.totalMoney}</span>
-            </div>
-        </div>
-        <div class="submitOrderDiv">
-            <button type="submit" class="submitOrderButton">提交订单</button>
-        </div>
-    </form>
+    <div>
+        <a href="forepayed?oid=${orderUser.id}"><button class="confirmPay">确认支付</button></a>
+    </div>
+
 </div>
+
 
 <div class="modal " id="loginModal" tabindex="-1" role="dialog" >
     <div class="modal-dialog loginDivInProductPageModalDiv">

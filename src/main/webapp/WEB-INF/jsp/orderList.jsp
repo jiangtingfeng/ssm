@@ -123,7 +123,7 @@ ${message_order}
                 <th width="100px">买家名称</th>
                 <th>创建时间</th>
                 <th>支付时间</th>
-                <th>发货时间</th>
+                <th>货到时间</th>
                 <th>确认收货时间</th>
                 <th width="120px">操作</th>
             </tr>
@@ -134,10 +134,19 @@ ${message_order}
             <tr>
                 <td>${order.order.id}</td>
                 <c:if test="${order.order.status == 1}">
-                    <td>待发货</td>
+                    <td>待付款</td>
                 </c:if>
                 <c:if test="${order.order.status == 2}">
+                    <td>已付款</td>
+                </c:if>
+                <c:if test="${order.order.status == 3}">
+                    <td>待发货</td>
+                </c:if>
+                <c:if test="${order.order.status == 3}">
                     <td>已发货</td>
+                </c:if>
+                <c:if test="${order.order.status == 3}">
+                    <td>确认收货</td>
                 </c:if>
                 <td>￥${order.order.totalMoney}</td>
                 <td align="center">${order.order.productNumber}</td>
@@ -149,7 +158,7 @@ ${message_order}
                 <td><fmt:formatDate value="${order.order.confirmTime}" pattern="yyyy-MM-dd HH:mm:dd"/></td>
                 <td>
                     <button oid=${order.order.id} class="orderPageCheckOrderItems btn btn-primary btn-xs"> 查看详情</button>
-                    <c:if test="${order.order.status == 1}">
+                    <c:if test="${order.order.status == 3}">
                     <a href="admin_order_delivery?id=${order.order.id}">
                         <button class="btn btn-primary btn-xs">发货</button>
                     </a>
