@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -36,7 +37,6 @@ function checkEmpty(id, name){
 	return true;
 }
 
-
 $(function(){
 	$("a.productDetailTopReviewLink").click(function(){
 		$("div.productReviewDiv").show();
@@ -62,32 +62,25 @@ $(function(){
 	$("a.notImplementLink").click(function(){
 		alert("这个功能没做，蛤蛤~");
 	});
-	
 });
 
 </script>
 </head>
-
 <body>
-
 <nav class="top ">
 	<div class="top_middle">
-	
 		<a href="indexLogined">
 			<span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-home redColor"></span>
 			天猫首页
-		</a>	
-		
+		</a>
 		<span>喵，欢迎来天猫</span>
-		
 			<a href="login">获取用户账号</a>
 			<a href="forelogout">退出</a>		
-		
 		<span class="pull-right">
 			<a href="forebought">我的订单</a>
 			<a href="forecart">
 			<span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-shopping-cart redColor"></span>
-			购物车<strong>0</strong>件</a>		
+				购物车<strong><c:if test="${! empty userOrder}">${userOrder.productNumber}</c:if></strong>件</a>
 		</span>
 	</div>
 </nav>
@@ -97,37 +90,24 @@ $(function(){
 	<a href="indexLogined">
 		<img id="simpleLogo" class="simpleLogo" src="image/simpleLogo.png">	
 	</a>
-	
-	<form action="foresearch" method="post" >	
-	<div class="simpleSearchDiv pull-right">
-		<input type="text" placeholder="平衡车 原汁机"  value="" name="keyword">
-		<button class="searchButton" type="submit">搜天猫</button>
-		<div class="searchBelow">
+
+	<form action="foresearch" method="post" >
+		<div class="simpleSearchDiv pull-right">
+			<input type="text" placeholder="平衡车 原汁机"  value="" name="keyword">
+			<button class="searchButton" type="submit">搜天猫</button>
+			<div class="searchBelow">
+				<c:if test="${! empty categoryList}">
+					<c:forEach items="${categoryList}" var="category">
 					<span>
-						<a href="forecategory?cid=76">
-							冰箱
-						</a>		
-							<span>|</span>			
-					</span>			
-					<span>
-						<a href="forecategory?cid=75">
-							空调
-						</a>		
-							<span>|</span>		
-					</span>			
-					<span>
-						<a href="forecategory?cid=74">
-							女表
+						<a href="forecategory?cid=${category.id}">
+								${category.categoryName}
 						</a>
-							<span>|</span>	
-					</span>			
-					<span>
-						<a href="forecategory?cid=73">
-							男表
-						</a>
-					</span>	
+							<span>|</span>
+					</span>
+					</c:forEach>
+				</c:if>
+			</div>
 		</div>
-	</div>
 	</form>
 	<div style="clear:both"></div>
 </div>
@@ -332,14 +312,12 @@ function syncPrice(pid,num,price){
 		    {"pid":pid,"number":num},
 		    function(result){
 				if("success"!=result){
-					location.href="login.jsp";
+					location.href="login";
 				}
 		    }
 		);
-
 }
-</script>	
-
+</script>
 
 <title>购物车</title>
 <div class="cartDiv">
@@ -348,47 +326,91 @@ function syncPrice(pid,num,price){
 		<span class="cartTitlePrice">￥0.00</span>
 		<button class="createOrderButton" disabled="disabled">结 算</button>
 	</div>
-	
-	
+
+
 	<div class="cartProductList">
 		<table class="cartProductTable">
 			<thead>
-				<tr>
-					<th class="selectAndImage">
-							<img selectit="false" class="selectAllItem" src="image/cartNotSelected.png">				
+			<tr>
+				<th class="selectAndImage">
+					<img selectit="false" class="selectAllItem" src="img/site/cartNotSelected.png">
 					全选
-					
-					</th>
-					<th>商品信息</th>
-					<th>单价</th>
-					<th>数量</th>
-					<th width="120px">金额</th>
-					<th class="operation">操作</th>
-				</tr>
+				</th>
+				<th>商品信息</th>
+				<th>单价</th>
+				<th>数量</th>
+				<th width="120px">金额</th>
+				<th class="operation">操作</th>
+			</tr>
 			</thead>
 			<tbody>
-								
+			<c:if test="${! empty productNumberVoList}">
+				<c:forEach items="${productNumberVoList}" var="productNumberVo">
+			<tr oiid="17015" class="cartProductItemTR">
+				<td>
+					<img selectit="false" oiid="${userOrder.id}" class="cartProductItemIfSelected" src="image/cartNotSelected.png">
+					<a style="display:none" href="#nowhere"><img src="image/cartSelected.png"></a>
+					<img class="cartProductImg"  src="image/${productNumberVo.product.productPic} ">
+				</td>
+				<td>
+					<div class="cartProductLinkOutDiv">
+						<a href="foreproduct?pid=149" class="cartProductLink">${productNumberVo.product.productName}</a>
+						<div class="cartProductLinkInnerDiv">
+							<img src="image/creditcard.png" title="支持信用卡支付">
+							<img src="image/7day.png" title="消费者保障服务,承诺7天退货">
+							<img src="image/promise.png" title="消费者保障服务,承诺如实描述">
+						</div>
+					</div>
+
+				</td>
+				<td>
+					<span  class="cartProductItemPromotionPrice">￥${productNumberVo.product.lowerPrice}</span>
+				</td>
+				<td>
+
+					<div class="cartProductChangeNumberDiv">
+						<span class="hidden orderItemStock " pid="${productNumberVo.product.id}">${productNumberVo.product.number}</span>
+						<span class="hidden orderItemPromotePrice " pid="${productNumberVo.product.id}">${productNumberVo.product.lowerPrice}</span>
+						<a  pid="${productNumberVo.product.id}" class="numberMinus" href="#nowhere">-</a>
+						<input pid="${productNumberVo.product.id}" oiid="${userOrder.id}" class="orderItemNumberSetting" autocomplete="off" value="1">
+						<a  stock="${productNumberVo.product.number}" pid="${productNumberVo.product.id}" class="numberPlus" href="#nowhere">+</a>
+					</div>
+
+				</td>
+				<td >
+							<span class="cartProductItemSmallSumPrice" oiid="${userOrder.id}" pid="${productNumberVo.product.id}" >
+							￥ ${userOrder.totalMoney}
+							</span>
+
+				</td>
+				<td>
+					<a class="deleteOrderItem" oiid="${userOrder.id}"  href="#nowhere">删除</a>
+				</td>
+			</tr>
+				</c:forEach>
+			</c:if>
 			</tbody>
-		
 		</table>
 	</div>
-	
+
 	<div class="cartFoot">
-		<img selectit="false" class="selectAllItem" src="image/cartNotSelected.png">
+		<img selectit="false" class="selectAllItem" src="img/site/cartNotSelected.png">
 		<span>全选</span>
-<!-- 		<a href="#">删除</a> -->
-		
+		<!-- 		<a href="#">删除</a> -->
+
 		<div class="pull-right">
 			<span>已选商品 <span class="cartSumNumber" >0</span> 件</span>
-			
-			<span>合计 (不含运费): </span> 
+
+			<span>合计 (不含运费): </span>
 			<span class="cartSumPrice" >￥0.00</span>
 			<button class="createOrderButton" disabled="disabled" >结  算</button>
 		</div>
-		
+
 	</div>
-	
+
 </div>
+
+
 <jsp:include page="foot.jsp"></jsp:include>
 </body>
 </html>

@@ -27,4 +27,12 @@ public interface UserOrderMapper {
     @Update("update userOrder set sendTime=#{sendTime},status=#{status} where id=#{id}")
         int update(UserOrder order);
 
+    @Update("update userOrder set productNumber=#{productNumber},status=#{status},totalMoney=#{totalMoney} where id=#{id}")
+    int updateNumber(UserOrder order);
+
+    @Update("update userOrder set address=#{address},post=#{post},mobile=#{mobile},userMessage=#{userMessage},receiver=#{receiver} where id=#{id}")
+    int updateOrder(UserOrder userOrder);
+
+    @Update("update userOrder set status=#{status},payTime=#{payTime},sendTime=#{sendTime} where id=#{id}")
+    int updatePayTimeAndStatus(UserOrder userOrder);
 }

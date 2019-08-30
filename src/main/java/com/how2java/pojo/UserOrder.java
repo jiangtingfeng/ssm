@@ -20,4 +20,5 @@ public class UserOrder {
     private String mobile;
     private String userMessage;
     private int uid;
+    private String receiver;
 }

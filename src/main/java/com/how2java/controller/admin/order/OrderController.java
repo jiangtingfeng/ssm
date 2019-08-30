@@ -66,13 +66,7 @@ public class OrderController {
         ModelAndView modelAndView = new ModelAndView("orderList");
         UserOrder order = orderService.getById(id);
         order.setSendTime(new Date());
-        int k =  order.getStatus();
-        if(k == 1){
-            k = 2;
-        }
-        else {
-            k = 1;
-        }
+        int k = 4;
         order.setStatus(k);
         if(orderService.update(order) != 0) {
             modelAndView.addObject("message_order","发货成功！");

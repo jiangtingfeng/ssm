@@ -29,7 +29,16 @@ public class UserOrderService {
         return orderMapper.insert(order);
     }
 
-    public int update(UserOrder order) {
-        return orderMapper.update(order);
+    public int update(UserOrder userOrder) {
+        return orderMapper.update(userOrder);
+    }
+    public int updateNumber(UserOrder order) {
+        return orderMapper.updateNumber(order);
+    }
+    public int updateOrder(UserOrder userOrder){
+        return orderMapper.updateOrder(userOrder);
+    }
+    public int updatePayTimeAndStatus(UserOrder userOrder){
+        return orderMapper.updatePayTimeAndStatus(userOrder);
     }
 }

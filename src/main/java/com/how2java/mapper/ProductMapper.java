@@ -23,7 +23,14 @@ public interface ProductMapper {
     int deleteByCid(int cid);
 
     @Select("select *from product where cid=#{cid} order by id desc")
-      List<Product> list(int cid);
+    List<Product> list(int cid);
+
+    @Select("select *from product where cid=#{cid} order by updateDate desc")
+    List<Product> listByDate(int cid);
+
+    @Select("select *from product where cid=#{cid} order by price desc")
+    List<Product> listByPrice(int cid);
+
 
     @Select("select *from product where cid=#{cid} order by id desc limit #{start},#{count}")
     List<Product> getByCidAndPage(@Param(value = "cid") int cid, @Param(value = "start") int start, @Param(value = "count") int count);
@@ -40,4 +47,6 @@ public interface ProductMapper {
 
     @Select("select count(*) from product")
     int count();
+
+
 }

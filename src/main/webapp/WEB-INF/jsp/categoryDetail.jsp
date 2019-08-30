@@ -130,8 +130,7 @@
 
 <div id="category">
     <div class="categoryPageDiv">
-        <img src="image/${category.categoryPic}">
-
+        <img src="image/${category.categoryPic}" width="1000" height="200">
         <script>
             $(function(){
                 $("input.sortBarPrice").keyup(function(){
@@ -140,15 +139,12 @@
                         $("div.productUnit").show();
                         return;
                     }
-
                     num = parseInt(num);
                     if(isNaN(num))
                         num= 1;
                     if(num<=0)
                         num = 1;
                     $(this).val(num);
-
-
                     var begin = $("input.beginPrice").val();
                     var end = $("input.endPrice").val();
                     if(!isNaN(begin) && !isNaN(end)){
@@ -158,7 +154,6 @@
                         $("div.productUnit").each(function(){
                             var price = $(this).attr("price");
                             price = new Number(price);
-
                             if(price<=end && price>=begin)
                                 $(this).show();
                         });
@@ -171,11 +166,11 @@
         <div class="categorySortBar">
             <table class="categorySortBarTable categorySortTable">
                 <tr>
-                    <td class="grayColumn" ><a href="?cid=76&sort=all">综合<span class="glyphicon glyphicon-arrow-down"></span></a></td>
-                    <td  ><a href="?cid=76&sort=review">人气<span class="glyphicon glyphicon-arrow-down"></span></a></td>
-                    <td ><a href="?cid=76&sort=date">新品<span class="glyphicon glyphicon-arrow-down"></span></a></td>
-                    <td ><a href="?cid=76&sort=saleCount">销量<span class="glyphicon glyphicon-arrow-down"></span></a></td>
-                    <td ><a href="?cid=76&sort=price">价格<span class="glyphicon glyphicon-resize-vertical"></span></a></td>
+                    <td class="grayColumn" ><a href="?cid=${category.id}&sort=all">综合<span class="glyphicon glyphicon-arrow-down"></span></a></td>
+                    <td  ><a href="?cid=${category.id}&sort=review">人气<span class="glyphicon glyphicon-arrow-down"></span></a></td>
+                    <td ><a href="?cid=${category.id}&sort=date">新品<span class="glyphicon glyphicon-arrow-down"></span></a></td>
+                    <td ><a href="?cid=${category.id}&sort=saleCount">销量<span class="glyphicon glyphicon-arrow-down"></span></a></td>
+                    <td ><a href="?cid=${category.id}&sort=price">价格<span class="glyphicon glyphicon-resize-vertical"></span></a></td>
                 </tr>
             </table>
 
@@ -190,25 +185,24 @@
 
         <div class="categoryProducts">
             <c:if test="${! empty productList}">
-                <c:forEach items="${productList}" var="product">
-            <div class="productUnit" price="${product.price}">
+                <c:forEach items="${productList}" var="products">
+            <div class="productUnit" price="${products.product.price}">
                 <div class="productUnitFrame">
-                    <a href="foreproduct?pid=${product.id}">
-                        <img class="productImage" src="image/${product.productPic}">
+                    <a href="foreproduct?pid=${products.product.id}">
+                        <img class="productImage" src="image/${products.product.productPic}">
                     </a>
-                    <span class="productPrice">¥${product.price}</span>
-                    <a class="productLink" href="foreproduct?pid=${product.id}">
-                        ${product.productName}
+                    <span class="productPrice">¥${products.product.price}</span>
+                    <a class="productLink" href="foreproduct?pid=${products.product.id}">
+                        ${products.product.productName}
                     </a>
-                    <a  class="tmallLink" href="foreproduct?pid=${product.id}">天猫专卖</a>
+                    <a  class="tmallLink" href="foreproduct?pid=${products.product.id}">天猫专卖</a>
                     <div class="show1 productInfo">
-                        <span class="monthDeal ">月成交 <span class="productDealNumber">243笔</span></span>
-                        <span class="productReview">评价<span class="productReviewNumber">34</span></span>
+                        <span class="monthDeal ">月成交<span class="productDealNumber">${products.monthSell}笔</span></span>
+                        <span class="productReview">评价<span class="productReviewNumber">${products.message}</span></span>
                         <span class="wangwang">
 					<a class="wangwanglink" href="#nowhere">
 						<img src="image/wangwang.png">
 					</a>
-
 					</span>
                     </div>
                 </div>

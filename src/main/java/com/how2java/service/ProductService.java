@@ -53,4 +53,12 @@ public class ProductService {
     public int deleteById(int id) {
         return productMapper.delete(id);
     }
+
+    public List<Product> listByDate(int cid) {
+        return productMapper.listByDate(cid);
+    }
+
+    public List<Product> listByPrice(int cid) {
+        return productMapper.listByPrice(cid);
+    }
 }

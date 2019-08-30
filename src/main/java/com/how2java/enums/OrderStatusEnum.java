@@ -7,7 +7,7 @@ public enum OrderStatusEnum {
 
     ORDER((Integer)1,"待付款"),
     PAID((Integer)2,"已付款"),
-    SHIPPED((Integer)3,"代发货"),
+    SHIPPED((Integer)3,"待发货"),
     DELIVERED((Integer)4,"已发货"),
     CONFIRM((Integer)5,"确认收货");
 

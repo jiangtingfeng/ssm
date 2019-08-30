@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
@@ -318,8 +319,8 @@
             </div>
 
             <div class="productSaleAndReviewNumber">
-                <div>销量 <span class="redColor boldWord"> 0</span></div>
-                <div>累计评价 <span class="redColor boldWord"> 0</span></div>
+                <div>销量 <span class="redColor boldWord"> <c:if test="${!empty total}">${total}</c:if></span></div>
+                <div>累计评价 <span class="redColor boldWord"> <c:if test="${! empty commentList}">${commentList.size()}</c:if></span></div>
             </div>
             <div class="productNumber">
                 <span>数量</span>
@@ -340,7 +341,6 @@
                     </span>
                     </a>
                 </span>
-
             件</span>
                 <span>库存${product.number}件</span>
             </div>
@@ -367,9 +367,27 @@
     <div class="productReviewDiv" >
         <div class="productReviewTopPart">
             <a  href="#nowhere" class="productReviewTopPartSelectedLink">商品详情</a>
-            <a  href="#nowhere" class="selected">累计评价 <span class="productReviewTopReviewLinkNumber">0</span> </a>
+            <a  href="#nowhere" class="selected">累计评价 <span class="productReviewTopReviewLinkNumber"><c:if test="${! empty commentList}">${commentList.size()}</c:if></span> </a>
         </div>
         <div class="productReviewContentPart">
+            <c:if test="${! empty commentList}">
+                <c:forEach items="${commentList}" var="comment">
+                    <div class="productReviewItem">
+                        <div class="productReviewItemDesc">
+                            <div class="productReviewItemContent">
+                                ${comment.message}
+                            </div>
+                            <div class="productReviewItemDate">
+                                 <fmt:formatDate value="${comment.updateDate}" pattern="yyyy-MM-dd HH:mm:dd" />
+                            </div>
+                        </div>
+                        <div class="productReviewItemUserInfo">
+                            ${comment.userName}<span class="userInfoGrayPart">（匿名）</span>
+                        </div>
+                        <div style="clear:both"></div>
+                    </div>
+                </c:forEach>
+            </c:if>
         </div>
     </div>
 
@@ -377,45 +395,23 @@
     <div class="productDetailDiv" >
         <div class="productDetailTopPart">
             <a href="#nowhere" class="productDetailTopPartSelectedLink selected">商品详情</a>
-            <a href="#nowhere" class="productDetailTopReviewLink">累计评价 <span class="productDetailTopReviewLinkNumber">0</span> </a>
+            <a href="#nowhere" class="productDetailTopReviewLink">累计评价 <span class="productDetailTopReviewLinkNumber"><c:if test="${! empty commentList}">${commentList.size()}</c:if></span> </a>
         </div>
-
 
         <div class="productParamterPart">
             <div class="productParamter">产品参数：</div>
-
             <div class="productParamterList">
-
-                <span>同城服务:  同城物流送货上门 </span>
-
-                <span>坐便冲水量:  3/6L </span>
-
-                <span>颜色分类:  【箭牌头牌 收藏送原 </span>
-
-                <span>承重:  70kg及以上 </span>
-
-                <span>最小坑距:  305mm 400m </span>
-
-                <span>材质:  PP板 </span>
-
-                <span>排水方式:  地排水 </span>
-
-                <span>坐便器冲水方式:  喷射虹吸式 </span>
-
-                <span>型号:  AB1116 </span>
-
-                <span>盖板是否缓冲:  缓冲 </span>
-
-                <span>坐便器类型:  连体式 </span>
-
-                <span>冲水按键类型:  上按两端式 </span>
-
-                <span>品牌:  ARROW/箭牌 </span>
-
+                <c:if test="${! empty propertyList}">
+                    <c:forEach items="${propertyList}" var="property">
+                        <c:if test="${ ! empty property.propertyValue}">
+                            <span>${property.propertyName}:  ${property.propertyValue} </span>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
             </div>
             <div style="clear:both"></div>
         </div>
-
+<%--产品详细图片--%>
         <div class="productDetailImagesPart">
             <c:if test="${! empty productPicList}">
                 <c:forEach items="${productPicList}" var="productPic">

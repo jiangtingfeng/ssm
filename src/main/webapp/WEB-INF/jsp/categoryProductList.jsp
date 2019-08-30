@@ -268,7 +268,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" name="categoryName" value="${categoryName}" hidden="true"/>
+                            <input type="text" name="categoryName" value="${category.categoryName}" hidden="true"/>
                         </td>
                     </tr>
                     <tr class="submitTR">

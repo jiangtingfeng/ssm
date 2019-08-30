@@ -9,11 +9,10 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class Count {
+public class Comment {
     private Integer id;
+    private String message;
+    private String userName;
+    private Date updateDate;
     private Integer pid;
-    private Integer number;
-    private Integer oid;
-    private Date createTime;
-    private Integer uid;
 }

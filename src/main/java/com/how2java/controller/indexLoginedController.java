@@ -99,6 +99,7 @@ public class indexLoginedController {
             return "success";
         return "fail";
     }
+
     @RequestMapping("foreloginAjax")
     @ResponseBody
     public String  check(HttpServletRequest request){
