@@ -17,7 +17,7 @@ public interface CommentMapper {
     @Select("select *from comment where pid=#{pid} order by updateDate desc")
     List<Comment> listByPid(Integer pid);
 
-
     @Delete("delete from comment where pid=#{pid}")
     int delete(Integer pid);
+
 }
