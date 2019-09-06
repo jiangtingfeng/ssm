@@ -74,13 +74,13 @@ $(function(){
 			天猫首页
 		</a>
 		<span>喵，欢迎来天猫</span>
-			<a href="login">获取用户账号</a>
+			<a href="login"><c:if test="${! empty user}">${user.name}</c:if></a>
 			<a href="forelogout">退出</a>		
 		<span class="pull-right">
 			<a href="forebought">我的订单</a>
 			<a href="forecart">
 			<span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-shopping-cart redColor"></span>
-				购物车<strong><c:if test="${! empty userOrder}">${userOrder.productNumber}</c:if></strong>件</a>
+				购物车<strong><c:if test="${! empty size}">${size}</c:if></strong>件</a>
 		</span>
 	</div>
 </nav>

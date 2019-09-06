@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -37,11 +38,25 @@ public class CountService {
         return countMapper.update(count);
     }
 
+    public int updateStatus(Count count) {
+        return countMapper.updateStatus(count);
+    }
+
     public List<Count> getByTime(Date createTime){
         return countMapper.getByTime();
     }
 
     public List<Count> getByPid(int pid) {
         return countMapper.getByPid(pid);
+    }
+
+    public List<Count> getByOidAndStatus(Integer id, int status) {
+        if(countMapper.getByOidAndStatus(id,status) == null) {
+            return null;
+        }
+        return countMapper.getByOidAndStatus(id,status);
+    }
+    public int delete(Integer id) {
+        return countMapper.delete(id);
     }
 }

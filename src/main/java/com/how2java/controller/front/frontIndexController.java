@@ -130,7 +130,7 @@ public class frontIndexController {
             }
             found = true;
             oiid = order.getId();
-            List<Count> countList = countService.getByOid(order.getId());
+            List<Count> countList = countService.getByOidAndStatus(order.getId(),OrderStatusEnum.ORDER.getFlag());
             /*
              * 判断是否存在相应的计数
              * */
@@ -142,13 +142,14 @@ public class frontIndexController {
                 count.setNumber(num);
                 count.setCreateTime(new Date());
                 count.setUid(user.getId());
+                count.setStatus(OrderStatusEnum.ORDER.getFlag());
                 if(countService.insert(count) != 1){
                     session.setAttribute("message","新增失败");
                 }
             }
             AtomicBoolean tag = new AtomicBoolean(false);
             tag.set(false);
-            countList = countService.getByOid(order.getId());
+            countList = countService.getByOidAndStatus(order.getId(),OrderStatusEnum.ORDER.getFlag());
             countList.forEach(count -> {
                 if (count.getPid() == product.getId()) {
                     count.setNumber(count.getNumber() + num);
@@ -168,6 +169,7 @@ public class frontIndexController {
                 count1.setNumber(num);
                 count1.setCreateTime(new Date());
                 count1.setUid(user.getId());
+                count1.setStatus(OrderStatusEnum.ORDER.getFlag());
                 if(countService.insert(count1) != 1){
                     session.setAttribute("message","新增失败");
                 }
@@ -200,6 +202,7 @@ public class frontIndexController {
             count.setNumber(num);
             count.setCreateTime(new Date());
             count.setUid(user.getId());
+            count.setStatus(OrderStatusEnum.ORDER.getFlag());
             if(countService.insert(count) != 1){
                 session.setAttribute("message","新增失败");
             }
@@ -222,21 +225,27 @@ public class frontIndexController {
         int size = categoryList.size();
         int index = size <=4 ? size : 4;
         categories.addAll(categoryList.subList(0,index));
+        model.addAttribute("user",user);
         model.addAttribute("categoryList",categories);
         model.addAttribute("userOrder",userOrder);
         List<ProductNumberVo> productNumberVoList = new ArrayList<>();
-        List<Count> countList = countService.getByOid(userOrder.getId());
-        countList.forEach(count -> {
-            ProductNumberVo productNumberVo = new ProductNumberVo();
-            Product product = productService.getById(count.getPid());
-            productNumberVo.setProduct(product);
-            productNumberVo.setNumber(count.getNumber());
-            productNumberVoList.add(productNumberVo);
-        });
+        int status = OrderStatusEnum.ORDER.getFlag();
+        List<Count> countList = countService.getByOidAndStatus(userOrder.getId(),status);
+        int size1 = 0;
+        if(countList != null) {
+            size1 = countList.size();
+            countList.forEach(count -> {
+                ProductNumberVo productNumberVo = new ProductNumberVo();
+                Product product = productService.getById(count.getPid());
+                productNumberVo.setProduct(product);
+                productNumberVo.setNumber(count.getNumber());
+                productNumberVoList.add(productNumberVo);
+            });
+        }
         model.addAttribute("productNumberVoList",productNumberVoList);
+        model.addAttribute("size",size1);
         return "forecart";
     }
-
 
     @RequestMapping("forebuyone")
     public String buyone(int pid, int num, HttpSession session) {
@@ -277,6 +286,7 @@ public class frontIndexController {
                 count.setNumber(num);
                 count.setCreateTime(new Date());
                 count.setUid(user.getId());
+                count.setStatus(OrderStatusEnum.ORDER.getFlag());
                 if(countService.insert(count) != 1){
                      session.setAttribute("message","新增失败");
                 }
@@ -303,6 +313,7 @@ public class frontIndexController {
                count1.setNumber(num);
                count1.setCreateTime(new Date());
                count1.setUid(user.getId());
+               count1.setStatus(OrderStatusEnum.ORDER.getFlag());
                if(countService.insert(count1) != 1){
                    session.setAttribute("message","新增失败");
                 }
@@ -335,6 +346,7 @@ public class frontIndexController {
             count.setNumber(num);
             count.setCreateTime(new Date());
             count.setUid(user.getId());
+            count.setStatus(OrderStatusEnum.ORDER.getFlag());
             if(countService.insert(count) != 1){
                 session.setAttribute("message","新增失败");
             }
@@ -348,7 +360,11 @@ public class frontIndexController {
         UserOrder userOrder = new UserOrder();
         for (Integer strid : oiid) {
             userOrder = userOrderService.getById(strid);
-            List<Count> countList = countService.getByOid(userOrder.getId());
+            /*
+            * 获取没有支付的订单
+            * */
+            int status = OrderStatusEnum.ORDER.getFlag();
+            List<Count> countList = countService.getByOidAndStatus(userOrder.getId(),status);
             countList.forEach(count->{
                 ProductNumberVo productNumberVo = new ProductNumberVo();
                 Product product = productService.getById(count.getPid());
@@ -364,16 +380,18 @@ public class frontIndexController {
     }
 
     @RequestMapping("/forecreateOrder")
-    public ModelAndView forecreateOrder(UserOrder userOrder) {
+    public ModelAndView forecreateOrder(UserOrder userOrder,HttpSession session) {
         ModelAndView mav = new ModelAndView("payPage");
         UserOrder userOrder1 = userOrderService.getById(userOrder.getId());
-        userOrder1.setReceiver(userOrder.getReceiver() == null ? null : userOrder.getReceiver());
+        User user = (User) session.getAttribute("user");
+        userOrder1.setReceiver(userOrder.getReceiver() == null ? null : user.getName());
         userOrder1.setAddress(userOrder.getAddress() == null ? null : userOrder.getAddress());
         userOrder1.setPost(userOrder.getPost() == null ? null : userOrder.getPost());
         userOrder1.setMobile(userOrder.getMobile() == null ? userOrder1.getMobile() : userOrder.getMobile());
         userOrder1.setUserMessage(userOrder.getUserMessage());
+        userOrder1.setOrderNumber(UUID.randomUUID().toString().replace("-", "").substring(0,16));
         if(!StringUtils.isEmpty(userOrder.getUserMessage())) {
-            List<Count> countList = countService.getByOid(userOrder1.getId());
+            List<Count> countList = countService.getByOidAndStatus(userOrder1.getId(),OrderStatusEnum.ORDER.getFlag());
             if(countList != null) {
                 countList.forEach(count->{
                     Comment comment = new Comment();
@@ -391,6 +409,7 @@ public class frontIndexController {
         if(userOrderService.updateOrder(userOrder1) != 1) {
             mav.addObject("message","创建订单失败！");
         }
+        mav.addObject("user",user);
         mav.addObject("orderUser",userOrder1);
         return mav;
     }
@@ -406,6 +425,11 @@ public class frontIndexController {
         userOrder.setPayTime(new Date());
         userOrder.setSendTime(calendar.getTime());
         userOrder.setStatus(OrderStatusEnum.PAID.getFlag());
+        List<Count> countList = countService.getByOid(userOrder.getId());
+        countList.forEach(count->{
+            count.setStatus(OrderStatusEnum.PAID.getFlag());
+            countService.updateStatus(count);
+        });
         if(userOrderService.updatePayTimeAndStatus(userOrder) != 1) {
             mav.addObject("message","支付失败！");
         }
@@ -543,4 +567,174 @@ public class frontIndexController {
             });
     }
 
+    @RequestMapping("/foresearch")
+    public ModelAndView foresearch(String keyword) {
+        ModelAndView mav = new ModelAndView("search");
+        /*
+        * 添加产品分类
+        * */
+        List<Category> categoryList = categoryService.list();
+        mav.addObject("categoryList",categoryList);
+        /*
+        * 添加搜索到的产品列表(通过keyword进行模糊搜索)
+        * */
+        List<Product> productList = productService.listByName(keyword);
+        mav.addObject("productList",productList);
+        return mav;
+    }
+
+    @RequestMapping("/forebought")
+    public String forebought(Model model,HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        UserOrder userOrder = null;
+        if(user != null) {
+            userOrder = userOrderService.getByBuyerName(user.getName());
+        }
+        else {
+            return "login";
+        }
+        List<Category> categoryList = categoryService.list();
+        List<Category> categories = new LinkedList<>();
+        int size = categoryList.size();
+        int index = size <=4 ? size : 4;
+        categories.addAll(categoryList.subList(0,index));
+        model.addAttribute("user",user);
+        model.addAttribute("categoryList",categories);
+        model.addAttribute("userOrder",userOrder);
+        List<ProductNumberVo> productNumberVoList = new ArrayList<>();
+        int status = OrderStatusEnum.PAID.getFlag();
+        List<Count> countList = countService.getByOidAndStatus(userOrder.getId(),status);
+        int size1 = 0;
+        if(countList != null) {
+            size1 = countList.size();
+            countList.forEach(count -> {
+                ProductNumberVo productNumberVo = new ProductNumberVo();
+                Product product = productService.getById(count.getPid());
+                productNumberVo.setProduct(product);
+                productNumberVo.setNumber(count.getNumber());
+                productNumberVoList.add(productNumberVo);
+            });
+        }
+        model.addAttribute("productNumberVoList",productNumberVoList);
+        model.addAttribute("size",size1);
+        return "forebought";
+    }
+
+    @RequestMapping("/order_delivery")
+    public String adminorderdelivery(Model model,HttpSession session,@RequestParam(value = "id")int id) {
+        User user = (User) session.getAttribute("user");
+        UserOrder userOrder = userOrderService.getById(id);
+        userOrder.setStatus(OrderStatusEnum.SHIPPED.getFlag());
+        userOrder.setSendTime(new Date());
+        List<Category> categoryList = categoryService.list();
+        List<Category> categories = new LinkedList<>();
+        int size = categoryList.size();
+        int index = size <=4 ? size : 4;
+        categories.addAll(categoryList.subList(0,index));
+        model.addAttribute("user",user);
+        if(userOrderService.updateStatus1(userOrder) != 1) {
+            model.addAttribute("message11","催促失败！");
+        }
+        model.addAttribute("categoryList",categories);
+        model.addAttribute("userOrder",userOrder);
+        List<ProductNumberVo> productNumberVoList = new ArrayList<>();
+        int status = OrderStatusEnum.PAID.getFlag();
+        List<Count> countList = countService.getByOidAndStatus(userOrder.getId(),status);
+        int size1 = countList.size();
+        countList.forEach(count -> {
+            ProductNumberVo productNumberVo = new ProductNumberVo();
+            Product product = productService.getById(count.getPid());
+            productNumberVo.setProduct(product);
+            productNumberVo.setNumber(count.getNumber());
+            productNumberVoList.add(productNumberVo);
+        });
+        model.addAttribute("productNumberVoList",productNumberVoList);
+        model.addAttribute("size",size1);
+
+        return "forebought";
+    }
+
+    @RequestMapping("foredeleteOrder")
+    public String foredeleteOrder(Model model,HttpSession session,@RequestParam(value = "oid")int oid) {
+        UserOrder userOrder = userOrderService.getById(oid);
+        if(userOrderService.delete(oid) != 1) {
+            model.addAttribute("message","删除失败！");
+        }
+        else {
+            model.addAttribute("message","删除成功！");
+        }
+        List<Count> countList = countService.getByOid(userOrder.getId());
+        countList.forEach(count -> {
+            if(countService.delete(count.getId()) != 1) {
+                model.addAttribute("message","删除失败！");
+            }
+        });
+        return "forebought";
+    }
+
+    @RequestMapping("/order_confirm")
+    public String foreconfirmPay(Model model,HttpSession session,@RequestParam(value = "id")int id) {
+        User user = (User) session.getAttribute("user");
+        UserOrder userOrder = userOrderService.getById(id);
+        userOrder.setStatus(OrderStatusEnum.DELIVERED.getFlag());
+        userOrder.setConfirmTime(new Date());
+        List<Category> categoryList = categoryService.list();
+        List<Category> categories = new LinkedList<>();
+        int size = categoryList.size();
+        int index = size <=4 ? size : 4;
+        categories.addAll(categoryList.subList(0,index));
+        model.addAttribute("user",user);
+        if(userOrderService.updateStatus(userOrder) != 1) {
+            model.addAttribute("message11","确认失败！");
+        }
+        model.addAttribute("categoryList",categories);
+        model.addAttribute("userOrder",userOrder);
+        List<ProductNumberVo> productNumberVoList = new ArrayList<>();
+        int status = OrderStatusEnum.PAID.getFlag();
+        List<Count> countList = countService.getByOidAndStatus(userOrder.getId(),status);
+        int size1 = countList.size();
+        countList.forEach(count -> {
+            ProductNumberVo productNumberVo = new ProductNumberVo();
+            Product product = productService.getById(count.getPid());
+            productNumberVo.setProduct(product);
+            productNumberVo.setNumber(count.getNumber());
+            productNumberVoList.add(productNumberVo);
+        });
+        model.addAttribute("productNumberVoList",productNumberVoList);
+        model.addAttribute("size",size1);
+        return "foreconfirmPay";
+    }
+
+    @RequestMapping("/foreorderConfirmed")
+    public String foreorderConfirmed(Model model,HttpSession session,@RequestParam(value = "oid")int id) {
+        User user = (User) session.getAttribute("user");
+        UserOrder userOrder = userOrderService.getById(id);
+        userOrder.setStatus(OrderStatusEnum.DELIVERED.getFlag());
+        userOrder.setConfirmTime(new Date());
+        List<Category> categoryList = categoryService.list();
+        List<Category> categories = new LinkedList<>();
+        int size = categoryList.size();
+        int index = size <=4 ? size : 4;
+        categories.addAll(categoryList.subList(0,index));
+        model.addAttribute("user",user);
+        if(userOrderService.updateStatus(userOrder) != 1) {
+            model.addAttribute("message11","确认失败！");
+        }
+        model.addAttribute("categoryList",categories);
+        model.addAttribute("userOrder",userOrder);
+        List<ProductNumberVo> productNumberVoList = new ArrayList<>();
+        int status = OrderStatusEnum.PAID.getFlag();
+        List<Count> countList = countService.getByOidAndStatus(userOrder.getId(),status);
+        int size1 = countList.size();
+        countList.forEach(count -> {
+            ProductNumberVo productNumberVo = new ProductNumberVo();
+            Product product = productService.getById(count.getPid());
+            productNumberVo.setProduct(product);
+            productNumberVo.setNumber(count.getNumber());
+            productNumberVoList.add(productNumberVo);
+        });
+        model.addAttribute("productNumberVoList",productNumberVoList);
+        model.addAttribute("size",size1);
+        return "foreorderConfirmed";
+    }
 }

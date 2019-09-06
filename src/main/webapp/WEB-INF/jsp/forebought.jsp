@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -79,69 +81,46 @@ $(function(){
 </head>
 
 <body>
-
 <nav class="top ">
 	<div class="top_middle">
-	
 		<a href="indexLogined">
 			<span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-home redColor"></span>
 			天猫首页
-		</a>	
-		
+		</a>
 		<span>喵，欢迎来天猫</span>
-		
-		
-			<a href="login"></a>
-			<a href="forelogout">退出</a>		
-		
-		
-
-
-
+		<a href="login"><c:if test="${! empty user}">${user.name}</c:if></a>
+		<a href="forelogout">退出</a>
 		<span class="pull-right">
 			<a href="forebought">我的订单</a>
 			<a href="forecart">
 			<span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-shopping-cart redColor"></span>
-			购物车<strong>0</strong>件</a>		
+				购物车<strong><c:if test="${! empty size}">${size}</c:if></strong>件</a>
 		</span>
 	</div>
 </nav>
 
 <div class="simpleSearchOutDiv">
 	<a href="indexLogined">
-		<img id="simpleLogo" class="simpleLogo" src="image/simpleLogo.png">	
+		<img id="simpleLogo" class="simpleLogo" src="image/simpleLogo.png">
 	</a>
-	
-	<form action="foresearch" method="post" >	
-	<div class="simpleSearchDiv pull-right">
-		<input type="text" placeholder="平衡车 原汁机"  value="" name="keyword">
-		<button class="searchButton" type="submit">搜天猫</button>
-		<div class="searchBelow">
+
+	<form action="foresearch" method="post" >
+		<div class="simpleSearchDiv pull-right">
+			<input type="text" placeholder="平衡车 原汁机"  value="" name="keyword">
+			<button class="searchButton" type="submit">搜天猫</button>
+			<div class="searchBelow">
+				<c:if test="${! empty categoryList}">
+					<c:forEach items="${categoryList}" var="category">
 					<span>
-						<a href="forecategory?cid=76">
-							冰箱
-						</a>		
-							<span>|</span>			
-					</span>			
-					<span>
-						<a href="forecategory?cid=75">
-							空调
-						</a>		
-							<span>|</span>		
-					</span>			
-					<span>
-						<a href="forecategory?cid=74">
-							女表
+						<span>|</span>
+						<a href="forecategory?cid=${category.id}">
+								${category.categoryName}
 						</a>
-							<span>|</span>	
-					</span>			
-					<span>
-						<a href="forecategory?cid=73">
-							男表
-						</a>
-					</span>	
+					</span>
+					</c:forEach>
+				</c:if>
+			</div>
 		</div>
-	</div>
 	</form>
 	<div style="clear:both"></div>
 </div>
@@ -238,9 +217,8 @@ $(function(){
 		
 	});
 });
-
 </script>
-	
+${message11}
 <div class="boughtDiv">
 	<div class="orderType">
 		<div class="selectedOrderType"><a orderStatus="all" href="#nowhere">所有订单</a></div>
@@ -261,15 +239,70 @@ $(function(){
 				<td width="100px">交易操作</td>
 			</tr>
 		</table>
-	
 	</div>
-	
+	<c:if test="${! empty productNumberVoList}">
+		<c:forEach items="${productNumberVoList}" var="products">
 	<div class="orderListItem">
-		
-		
+		<table class="orderListItemTable" orderStatus="waitDelivery" oid="12377">
+			<tr class="orderListItemFirstTR">
+				<td colspan="2">
+					<b><fmt:formatDate value="${userOrder.payTime}" pattern="yyyy-MM-dd HH:mm:dd"/></b>
+					<span>订单号: ${userOrder.orderNumber}
+					</span>
+				</td>
+				<td  colspan="2"><img width="13px" src="image/orderItemTmall.png">天猫商场</td>
+				<td colspan="1">
+					<a class="wangwanglink" href="#nowhere">
+						<div class="orderItemWangWangGif"></div>
+					</a>
+				</td>
+				<td class="orderItemDeleteTD">
+					<a class="deleteOrderLink" oid="${userOrder.id}" href="#nowhere">
+						<span  class="orderListItemDelete glyphicon glyphicon-trash"></span>
+					</a>
+				</td>
+			</tr>
+			<tr class="orderItemProductInfoPartTR" >
+				<td class="orderItemProductInfoPartTD"><img width="80" height="80" src="image/${products.product.productPic}"></td>
+				<td class="orderItemProductInfoPartTD">
+					<div class="orderListItemProductLinkOutDiv">
+						<a href="foreproduct?pid=${products.product.id}">${products.product.productName}/${products.product.productTitle}</a>
+						<div class="orderListItemProductLinkInnerDiv">
+							<img src="image/creditcard.png" title="支持信用卡支付">
+							<img src="image/7day.png" title="消费者保障服务,承诺7天退货">
+							<img src="image/promise.png" title="消费者保障服务,承诺如实描述">
+						</div>
+					</div>
+				</td>
+				<td  class="orderItemProductInfoPartTD" width="100px">
+					<div class="orderListItemProductPrice">￥${userOrder.totalMoney}</div>
+				</td>
+				<td valign="top" rowspan="1" class="orderListItemNumberTD orderItemOrderInfoPartTD" width="100px">
+					<span class="orderListItemNumber">${products.number}</span>
+				</td>
+				<td valign="top" rowspan="1" width="120px" class="orderListItemProductRealPriceTD orderItemOrderInfoPartTD">
+					<div class="orderListItemProductRealPrice">￥${userOrder.totalMoney}</div>
+					<div class="orderListItemPriceWithTransport">￥${userOrder.totalMoney}(含运费：￥0.00)</div>
+				</td>
+				<td valign="top" rowspan="1" class="orderListItemButtonTD orderItemOrderInfoPartTD" width="100px">
+					<span>待发货</span>
+					<c:if test="${userOrder.status == 2}">
+					<button class="btn btn-info btn-sm ask2delivery" link="order_delivery?id=${userOrder.id}">催卖家发货</button>
+					</c:if>
+					<c:if test="${userOrder.status == 3}">
+						<a href="foreconfirmPay?oid=${userOrder.id}">
+							<button class="orderListItemConfirm">确认收货</button>
+						</a>
+					</c:if>
+				</td>
+			</tr>
+		</table>
 	</div>
-	
+		</c:forEach>
+	</c:if>
 </div>
+
+
 
 
 <jsp:include page="foot.jsp"></jsp:include>

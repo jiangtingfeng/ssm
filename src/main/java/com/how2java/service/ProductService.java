@@ -61,4 +61,8 @@ public class ProductService {
     public List<Product> listByPrice(int cid) {
         return productMapper.listByPrice(cid);
     }
+
+    public List<Product> listByName(String keyword) {
+        return productMapper.search("%"+keyword+"%");
+    }
 }

@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -76,14 +77,7 @@ public class indexLoginedController {
     }
 
 
-    @RequestMapping("/forebought")
-    public Object forebought() {
-        return "forebought";
-    }
-    @RequestMapping("/forecart")
-    public Object forecart() {
-        return "forecart";
-    }
+
 
     @RequestMapping("/login")
     public Object forelogin() {
@@ -112,4 +106,10 @@ public class indexLoginedController {
             return "fail";
     }
 
+    @RequestMapping("/forelogout")
+    public ModelAndView forelogout(HttpSession session) {
+        ModelAndView mav = new ModelAndView("login");
+        session.removeAttribute("user");
+        return mav;
+    }
 }

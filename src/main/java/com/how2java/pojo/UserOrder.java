@@ -21,4 +21,5 @@ public class UserOrder {
     private String userMessage;
     private int uid;
     private String receiver;
+    private String orderNumber;
 }

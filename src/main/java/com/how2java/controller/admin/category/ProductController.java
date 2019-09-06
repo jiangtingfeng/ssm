@@ -11,8 +11,6 @@ import com.how2java.service.ProductPicService;
 import com.how2java.service.ProductService;
 import com.how2java.service.PropertyService;
 import com.how2java.util.Page;
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import oracle.jrockit.jfr.openmbean.ProducerDescriptorType;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

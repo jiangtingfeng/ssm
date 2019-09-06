@@ -85,8 +85,8 @@
             天猫首页
         </a>
         <span>喵，欢迎来天猫</span>
-        <c:if test="${! empty userOrder}">
-            <a href="login">${userOrder.buyerName}</a>
+        <c:if test="${! empty user}">
+            <a href="login">${user.name}</a>
         </c:if>
         <span>欢迎登入</span>
         <span class="pull-right">

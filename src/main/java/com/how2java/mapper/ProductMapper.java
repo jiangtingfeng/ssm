@@ -48,5 +48,6 @@ public interface ProductMapper {
     @Select("select count(*) from product")
     int count();
 
-
+    @Select("select *from product where productName like #{productName}")
+    List<Product> search(String productName);
 }

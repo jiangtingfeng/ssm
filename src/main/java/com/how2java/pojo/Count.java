@@ -16,4 +16,5 @@ public class Count {
     private Integer oid;
     private Date createTime;
     private Integer uid;
+    private Integer status;
 }

@@ -41,4 +41,16 @@ public class UserOrderService {
     public int updatePayTimeAndStatus(UserOrder userOrder){
         return orderMapper.updatePayTimeAndStatus(userOrder);
     }
+
+
+    public int updateStatus(UserOrder userOrder) {
+        return orderMapper.updateStatus(userOrder);
+    }
+    public int updateStatus1(UserOrder userOrder) {
+        return orderMapper.updateStatus1(userOrder);
+    }
+
+    public int delete(int oid) {
+        return orderMapper.delete(oid);
+    }
 }

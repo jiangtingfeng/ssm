@@ -82,8 +82,8 @@ $(function(){
 			<a href="login.jsp">请登录</a>
 			<a href="register.jsp">免费注册</a>		
 		<span class="pull-right">
-			<a href="forebought.jsp">我的订单</a>
-			<a href="forecart.jsp">
+			<a href="forebought">我的订单</a>
+			<a href="forecart">
 			<span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-shopping-cart redColor"></span>
 			购物车<strong>0</strong>件</a>		
 		</span>

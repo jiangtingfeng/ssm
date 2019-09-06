@@ -48,6 +48,7 @@ public class OrderController {
                 productAndNumber.setProductName(product.getProductName());
                 productAndNumber.setId(product.getId());
                 productAndNumber.setPrice(product.getPrice());
+                productAndNumber.setLowerPrice(product.getLowerPrice());
                 productAndNumber.setNumberOfBuy(count.getNumber());
                 productAndNumbers.add(productAndNumber);
             });

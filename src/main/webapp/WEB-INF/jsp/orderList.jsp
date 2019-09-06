@@ -185,7 +185,7 @@ ${message_order}
                                     <span class="text-muted">${product.numberOfBuy}</span>
                                 </td>
                                 <td align="right">
-                                    <span class="text-muted">单价：￥${product.price}</span>
+                                    <span class="text-muted">单价：￥${product.lowerPrice}</span>
                                 </td>
                                 </tr>
                                 </c:forEach>
