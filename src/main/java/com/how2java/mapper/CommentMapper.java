@@ -11,7 +11,7 @@ import java.util.List;
 @MapperScan
 public interface CommentMapper {
 
-    @Insert("insert into comment values(#{message},#{userName},#{updateDate},#{pid})")
+    @Insert("insert into comment(message,userName,updateDate,pid) values(#{message},#{userName},#{updateDate},#{pid})")
     int insert (Comment comment);
 
     @Select("select *from comment where pid=#{pid} order by updateDate desc")

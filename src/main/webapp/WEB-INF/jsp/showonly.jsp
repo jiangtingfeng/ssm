@@ -1,14 +1,13 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
   Date: 2019/9/6/006
-  Time: 11:24
+  Time: 15:40
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -16,7 +15,7 @@
     <link href="css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="js/bootstrap/3.3.6/bootstrap.min.js"></script>
     <link href="css/fore/style.css" rel="stylesheet">
-    <title>交易成功</title>
+    <title>评论显示</title>
     <script>
         function formatMoney(num){
             num = num.toString().replace(/\$|\,/g,'');
@@ -42,7 +41,6 @@
             return true;
         }
         $(function(){
-
             $("a.productDetailTopReviewLink").click(function(){
                 $("div.productReviewDiv").show();
                 $("div.productDetailDiv").hide();
@@ -69,8 +67,7 @@
         });
     </script>
 </head>
-</body>
-
+<body>
 <nav class="top ">
     <div class="top_middle">
         <a href="indexLogined">
@@ -115,15 +112,28 @@
     <div style="clear:both"></div>
 </div>
 
-
-<div class="orderFinishDiv">
-    <div class="orderFinishTextDiv">
-        <img src="image/orderFinish.png">
-        <span>交易已经成功，卖家将收到您的货款。</span>
+<div class="reviewStasticsDiv">
+    <div class="reviewStasticsLeft">
+        <div class="reviewStasticsLeftTop"></div>
+        <div class="reviewStasticsLeftContent">累计评价 <span class="reviewStasticsNumber"><c:if test="${! empty commentList}">${commentList.size()}</c:if></span></div>
+        <div class="reviewStasticsLeftFoot"></div>
+    </div>
+    <div class="reviewStasticsRight">
+        <div class="reviewStasticsRightEmpty"></div>
+        <div class="reviewStasticsFoot"></div>
     </div>
 </div>
-
-<jsp:include page="foot.jsp"></jsp:include>
+<c:if test="${! empty commentList}">
+<c:forEach items="${commentList}" var="comments">
+    <div class="reviewDivlistReviews">
+    <div class="reviewDivlistReviewsEach">
+        <div class="reviewDate"><fmt:formatDate value="${comments.updateDate}" pattern="yyyy-MM-dd HH:mm:dd"/></div>
+        <div class="reviewContent">${comments.message} </div>
+        <div class="reviewUserInfo pull-right">${comments.userName}<span class="reviewUserInfoAnonymous">(匿名)</span></div>
+    </div>
+</div>
+</c:forEach>
+</c:if>
 
 </body>
 </html>

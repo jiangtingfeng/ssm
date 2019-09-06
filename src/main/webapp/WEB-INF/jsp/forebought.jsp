@@ -294,6 +294,11 @@ ${message11}
 							<button class="orderListItemConfirm">确认收货</button>
 						</a>
 					</c:if>
+					<c:if test="${userOrder.status == 4}">
+						<a href="forecomment?oid=${userOrder.id}">
+							<button class="orderListItemConfirm">评论</button>
+						</a>
+					</c:if>
 				</td>
 			</tr>
 		</table>
@@ -301,10 +306,6 @@ ${message11}
 		</c:forEach>
 	</c:if>
 </div>
-
-
-
-
 <jsp:include page="foot.jsp"></jsp:include>
 </body>
 </html>

@@ -9,7 +9,6 @@
   Time: 11:24
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -184,13 +183,13 @@
             </tr>
             <tr>
                 <td>成交时间：</td>
-                <td>#{userOrder.confirmTime}</td>
+                <td><fmt:formatDate value="${userOrder.confirmTime}" pattern="yyyy-MM-dd HH:mm:ss"></fmt:formatDate> </td>
             </tr>
         </table>
     </div>
     <div class="confirmPayButtonDiv">
         <div class="confirmPayWarning">请收到货后，再确认收货！否则您可能钱货两空！</div>
-        <a href="foreorderConfirmed?oid=12380"><button class="confirmPayButton">确认支付</button></a>
+        <a href="foreorderConfirmed?oid=${userOrder.id}"><button class="confirmPayButton">确认支付</button></a>
     </div>
 </div>
 

@@ -1,14 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
   Date: 2019/9/6/006
-  Time: 11:24
+  Time: 15:07
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -16,7 +14,7 @@
     <link href="css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
     <script src="js/bootstrap/3.3.6/bootstrap.min.js"></script>
     <link href="css/fore/style.css" rel="stylesheet">
-    <title>交易成功</title>
+    <title>添加评论</title>
     <script>
         function formatMoney(num){
             num = num.toString().replace(/\$|\,/g,'');
@@ -42,7 +40,6 @@
             return true;
         }
         $(function(){
-
             $("a.productDetailTopReviewLink").click(function(){
                 $("div.productReviewDiv").show();
                 $("div.productDetailDiv").hide();
@@ -69,8 +66,7 @@
         });
     </script>
 </head>
-</body>
-
+<body>
 <nav class="top ">
     <div class="top_middle">
         <a href="indexLogined">
@@ -115,15 +111,27 @@
     <div style="clear:both"></div>
 </div>
 
-
-<div class="orderFinishDiv">
-    <div class="orderFinishTextDiv">
-        <img src="image/orderFinish.png">
-        <span>交易已经成功，卖家将收到您的货款。</span>
+<div class="reviewDiv">
+    <div class="makeReviewDiv">
+        <form method="post" action="foredoreview">
+            <div class="makeReviewText">其他买家，需要你的建议哦！</div>
+            <table class="makeReviewTable">
+                <tr>
+                    <td class="makeReviewTableFirstTD">评价商品</td>
+                    <td><textarea name="message"></textarea></td>
+                </tr>
+            </table>
+            <div class="makeReviewButtonDiv">
+                <input type="hidden" name="pid" value="${product.id}">
+                <button type="submit">提交评价</button>
+            </div>
+        </form>
     </div>
 </div>
 
-<jsp:include page="foot.jsp"></jsp:include>
 
+
+
+<jsp:include page="foot.jsp"></jsp:include>
 </body>
 </html>

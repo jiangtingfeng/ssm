@@ -1,6 +1,5 @@
 package com.how2java.controller.front;
 
-import com.alibaba.druid.sql.visitor.functions.Char;
 import com.how2java.Vo.ProductAndSellVo;
 import com.how2java.Vo.ProductNumberVo;
 import com.how2java.enums.OrderStatusEnum;
@@ -13,12 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.crypto.Data;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -669,14 +666,14 @@ public class frontIndexController {
                 model.addAttribute("message","删除失败！");
             }
         });
-        return "forebought";
+        return "index";
     }
 
-    @RequestMapping("/order_confirm")
-    public String foreconfirmPay(Model model,HttpSession session,@RequestParam(value = "id")int id) {
+    @RequestMapping("/foreconfirmPay")
+    public String foreconfirmPay(Model model,HttpSession session,@RequestParam(value = "oid")int oid) {
         User user = (User) session.getAttribute("user");
-        UserOrder userOrder = userOrderService.getById(id);
-        userOrder.setStatus(OrderStatusEnum.DELIVERED.getFlag());
+        UserOrder userOrder = userOrderService.getById(oid);
+        userOrder.setStatus(OrderStatusEnum.SHIPPED.getFlag());
         userOrder.setConfirmTime(new Date());
         List<Category> categoryList = categoryService.list();
         List<Category> categories = new LinkedList<>();
@@ -700,15 +697,16 @@ public class frontIndexController {
             productNumberVo.setNumber(count.getNumber());
             productNumberVoList.add(productNumberVo);
         });
+
         model.addAttribute("productNumberVoList",productNumberVoList);
         model.addAttribute("size",size1);
-        return "foreconfirmPay";
+        return "foreconfirm";
     }
 
     @RequestMapping("/foreorderConfirmed")
-    public String foreorderConfirmed(Model model,HttpSession session,@RequestParam(value = "oid")int id) {
+    public String foreorderConfirmed(Model model,HttpSession session,@RequestParam(value = "oid")int oid) {
         User user = (User) session.getAttribute("user");
-        UserOrder userOrder = userOrderService.getById(id);
+        UserOrder userOrder = userOrderService.getById(oid);
         userOrder.setStatus(OrderStatusEnum.DELIVERED.getFlag());
         userOrder.setConfirmTime(new Date());
         List<Category> categoryList = categoryService.list();
@@ -731,10 +729,66 @@ public class frontIndexController {
             Product product = productService.getById(count.getPid());
             productNumberVo.setProduct(product);
             productNumberVo.setNumber(count.getNumber());
-            productNumberVoList.add(productNumberVo);
         });
         model.addAttribute("productNumberVoList",productNumberVoList);
         model.addAttribute("size",size1);
         return "foreorderConfirmed";
+    }
+
+    @RequestMapping("/forecomment")
+    public String forecomment(Model model,HttpSession session,@RequestParam(value = "oid")int oid){
+        User user = (User) session.getAttribute("user");
+        UserOrder userOrder = userOrderService.getById(oid);
+        userOrder.setStatus(OrderStatusEnum.CONFIRM.getFlag());
+        userOrder.setConfirmTime(new Date());
+        List<Category> categoryList = categoryService.list();
+        List<Category> categories = new LinkedList<>();
+        int size = categoryList.size();
+        int index = size <=4 ? size : 4;
+        categories.addAll(categoryList.subList(0,index));
+        model.addAttribute("user",user);
+        if(userOrderService.updateStatus(userOrder) != 1) {
+            model.addAttribute("message11","确认失败！");
+        }
+        model.addAttribute("categoryList",categories);
+        model.addAttribute("userOrder",userOrder);
+        /*
+        * 获取产品
+        * */
+        List<Count> countList = countService.getByOidAndStatus(userOrder.getId(),OrderStatusEnum.PAID.getFlag());
+        if(countList != null) {
+            Product product = productService.getById(countList.get(0).getPid());
+            model.addAttribute("product",product);
+        }
+        return "forereview";
+    }
+
+    @RequestMapping("/foredoreview")
+    public String foredoreview(HttpSession session,@RequestParam(value = "pid")int pid,@RequestParam(value = "message")String message,Model model) {
+        User user = (User)session.getAttribute("user");
+        Comment comment = new Comment();
+        comment.setMessage(message);
+        comment.setUserName(user.getName());
+        comment.setUpdateDate(new Date());
+        comment.setPid(pid);
+        if(commentService.insert(comment) != 1) {
+            model.addAttribute("message1","评论失败！");
+        }
+        List<Comment> commentList = commentService.list(comment.getPid());
+        if(commentList != null) {
+            commentList.forEach(comment1 -> {
+                String name = comment1.getUserName();
+                char[] chars = name.toCharArray();
+                String s = "";
+                s = s + chars[0];
+                for (int i = 1; i < chars.length - 1; i++) {
+                    s = s + "*";
+                }
+                s = s + chars[chars.length - 1];
+                comment1.setUserName(s);
+            });
+        }
+        model.addAttribute("commentList",commentList);
+        return "showonly";
     }
 }
