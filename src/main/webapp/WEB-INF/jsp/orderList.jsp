@@ -142,10 +142,10 @@ ${message_order}
                 <c:if test="${order.order.status == 3}">
                     <td>待发货</td>
                 </c:if>
-                <c:if test="${order.order.status == 3}">
+                <c:if test="${order.order.status == 4}">
                     <td>已发货</td>
                 </c:if>
-                <c:if test="${order.order.status == 3}">
+                <c:if test="${order.order.status == 5}">
                     <td>确认收货</td>
                 </c:if>
                 <td>￥${order.order.totalMoney}</td>
